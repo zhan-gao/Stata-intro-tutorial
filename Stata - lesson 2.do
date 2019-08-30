@@ -1,11 +1,19 @@
 ******** copyright Ida Johnsson, 2016. All right reserved.
-set more off 
+******** Modified by Zhan Gao for ECON419, Fall 2019 @ USC 
 
+set more off 
 clear
 * load data
 sysuse lifeexp
 
-*************** t-tests ***************************
+
+
+*******************************************************************
+* 		3. HYPOTHESIS TESTING & BASIC REGRESSION ANALYSIS
+*******************************************************************
+
+
+* -------------------- t-tests -----------------------------
 * test that the average life expectancy in the data is equal to 75
 ttest lexp==75
 
@@ -17,7 +25,7 @@ replace income_group=1 if gnppc>=4000
 
 ttest lexp, by(income_group)
 
-*************** regression analysis ***************************
+* ---------------- regression analysis ------------------------
 
 eststo clear
 * OLS regression of life expectancy on GNP 
@@ -26,11 +34,10 @@ reg lexp gnppc
 * store estimates
 eststo reg1
 
-* predict residuals
+* residuals
 predict uhat, r
 
-
-* predict life expectancy using the estimated coefficients
+* predicted life expectancy using the estimated coefficients
 predict yhat, xb
 
 * calculate lower bound and upper bound of 95% confidence interval of the predicted life expectancy
@@ -45,7 +52,6 @@ label variable lb "95% conf. int. (lb)"
 *upper bound
 gen ub=yhat+1.96*se_yhat
 label variable ub "95% conf. int. (ub)"
-
 
 * plot observed and predicted life expectancy
 graph twoway (scatter lexp gnppc) (line yhat gnppc)
@@ -68,8 +74,7 @@ eststo reg4
 **** compare regression results
 esttab reg1 reg2 reg3 reg4, label
 
-
-****** Note that there are different ways of including dummy variables in a regresson
+**Note that there are different ways of including dummy variables in a regresson
 * instead of using the xi command we can also generate a set of dummies
 
 tab region, gen(regiond)
